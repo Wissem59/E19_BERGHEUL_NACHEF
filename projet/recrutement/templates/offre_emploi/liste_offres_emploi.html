@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offres d'Emploi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        .main-content {
+            padding: 20px;
+        }
+        .header {
+            color:#08676F;
+            padding: 20px 0;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .btn-custom {
+            background-color: #08676F;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            font-size: 1.1em;
+        }
+        .btn-custom:hover {
+            background-color: #065b5c;
+        }
+        .offre_emploi-card {
+            background-color: #fff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ccc;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+        .offre_emploi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        .offre_emploi-card h3 {
+            margin: 0;
+            color: #08676F;
+            font-size: 1.8em;
+        }
+        .offre_emploi-card p {
+            margin: 10px 0;
+            line-height: 1.6;
+            font-size: 1.1em;
+            color: #555;
+        }
+        .offre_emploi-card .details {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .offre_emploi-card .btn-view {
+            margin-top: 10px;
+            display: inline-block;
+            padding: 8px 12px;
+            background-color: #08676F;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .offre_emploi-card .btn-view:hover {
+            background-color: #065b5c;
+        }
+        .add-offre_emploi-btn {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+        /* Search Form Styles */
+        .search-form {
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .search-form input, .search-form select {
+            padding: 10px;
+            margin-bottom: 10px;
+            margin-right: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 24%; /* Adjusting width to 1/4th of the container */
+            font-size: 1em;
+        }
+        .search-form input:last-child, .search-form select:last-child {
+            margin-right: 0;
+        }
+        .search-form button {
+            align-self: center;
+            padding: 10px 15px; /* Smaller size */
+            background-color: #08676F;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em; /* Matching font size */
+            width: 24%; /* Aligning width with other input fields */
+        }
+        .search-form button:hover {
+            background-color: #065b5c;
+        }
+    </style>
+</head>
+<body>
+    {% extends "base.html" %}
+
+    {% block header_title %}Offres d'Emploi{% endblock %}
+
+    {% block content %}
+    <div class="header">
+        <h1>Offres d'Emploi</h1>
+    </div>
+    <div class="main-content">
+        <!-- Search Form -->
+        <form method="GET" class="search-form">
+            {% csrf_token %}
+            <input type="text" name="titre" class="form-control" placeholder="Rechercher par titre" value="{{ request.GET.titre }}">
+            <select name="statut" class="form-control">
+                <option value="">-- Statut --</option>
+                <option value="Actif" {% if request.GET.statut == "Actif" %}selected{% endif %}>Actif</option>
+                <option value="En attente" {% if request.GET.statut == "En attente" %}selected{% endif %}>En attente</option>
+                <option value="Expiré" {% if request.GET.statut == "Expiré" %}selected{% endif %}>Expiré</option>
+            </select>
+            <input type="date" name="date_publication" class="form-control" value="{{ request.GET.date_publication }}">
+            <input type="date" name="date_expiration" class="form-control" value="{{ request.GET.date_expiration }}">
+            <button type="submit" class="btn-custom">Rechercher</button>
+        </form>
+
+        <div class="add-offre_emploi-btn">
+            <a href="{% url 'publier_offre_emploi' %}" class="btn-custom">Publier une Offre</a>
+        </div>
+
+        {% if offres_emploi %}
+            {% for offre_emploi in offres_emploi %}
+            <div class="offre_emploi-card">
+                <h3>{{ offre_emploi.titre }}</h3>
+                <p>{{ offre_emploi.description|truncatewords:30 }}</p>
+                <p class="details">
+                    <strong>Lieu :</strong> {{ offre_emploi.lieu }}<br>
+                    <strong>Type de Contrat :</strong> {{ offre_emploi.type_contrat }}<br>
+                    <strong>Date Publie :</strong> {{ offre_emploi.date_publication|date:"d/m/Y" }}<br>
+                    <strong>Date Limite :</strong> {{ offre_emploi.date_expiration|date:"d/m/Y" }}<br>
+                    <strong>statut :</strong> {{ offre_emploi.statut }}
+                </p>
+                <a href="{% url 'consulter_offre_emploi' offre_emploi.id %}" class="btn-view">Consulter</a>
+            </div>
+            {% endfor %}
+        {% else %}
+        <p>Aucune offre d'emploi disponible pour le moment.</p>
+        {% endif %}
+    </div>
+    {% endblock %}
+</body>
+</html>

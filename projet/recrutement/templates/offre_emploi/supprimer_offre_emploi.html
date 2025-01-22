@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminer un Contrat</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #e5f5f5;
+            color: #333;
+        }
+
+        .main-content {
+            padding: 20px;
+        }
+
+        .frame-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            margin: 30px auto;
+            max-width: 800px;
+            border: 2px solid #08676F;
+        }
+
+        .btn-custom {
+            background-color: #d9534f;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-custom:hover {
+            background-color: #c9302c;
+        }
+
+        .btn-secondary {
+            background-color: #f5f5f5;
+            color: #0066cc;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e0e0e0;
+        }
+
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        form input, form select, form textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            background-color: #f4f4f4;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+
+        form input:focus, form select:focus, form textarea:focus {
+            border-color: #08676F;
+            outline: none;
+        }
+
+        form button {
+            padding: 12px 15px;
+            background-color: #08676F;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        form button:hover {
+            background-color: #065b5c;
+        }
+
+        .go-back-btn {
+            background-color: #f5f5f5;
+            color: #0066cc;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .go-back-btn:hover {
+            background-color: #e0e0e0;
+        }
+
+        .favorite-btn {
+            background-color: transparent;
+            border: none;
+            color: #f0ad4e;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .favorite-btn:hover {
+            color: #ff9900;
+        }
+    </style>
+</head>
+<body>
+    {% extends "base.html" %}
+    
+    {% block title %}Supprimer Contrat{% endblock %}
+    
+    {% block content %}
+    <div class="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <!-- Add the "Favoris" button -->
+            <form method="post" action="{% url 'ajouter_favoris' current_url=current_url %}">
+                {% csrf_token %}
+                <button type="submit" class="favorite-btn" title="Add to Favorites">
+                    <i class="fas fa-star"></i>
+                </button> 
+            </form>
+            <h1>Supprimer une Offre d'Emploi</h1>
+            <!-- Go back button -->
+            <a href="javascript:history.back()" class="go-back-btn" title="Go Back">
+                <i class="fas fa-arrow-left"></i> 
+            </a>
+        </div>
+        <div class="frame-container">
+            <div class="info-section">
+                <h2>Informations de l'Offre</h2>
+                <p class="info-item"><span>Titre :</span> {{ offre_emploi.titre }}</p>
+                <p class="info-item"><span>Description :</span> {{ offre_emploi.description }}</p>
+                <p class="info-item"><span>Lieu :</span> {{ offre_emploi.lieu }}</p>
+                <p class="info-item"><span>Type de Contrat :</span> {{ offre_emploi.type_contrat }}</p>
+                <p class="info-item"><span>Date Limite de Candidature :</span> {{ offre_emploi.date_expiration }}</p>
+            </div>
+            <p class="confirmation">Êtes-vous sûr de vouloir supprimer cette offre d'emploi ?</p>
+            <form method="post">
+                {% csrf_token %}
+                <div class="button-group">
+                    <button type="submit" class="btn-delete">Supprimer</button>
+                    <a href="/Offre_emploi/liste_offre_emploi" class="btn-cancel">Annuler</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% endblock %}
+</body>
+</html>

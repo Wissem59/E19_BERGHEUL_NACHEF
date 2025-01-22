@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Page</title>
+    <!-- Link to Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <!-- Font Awesome CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <style>
+        /* Custom styles for sidebar */
+        .sidebar {
+            background-color: #08676F;
+            height: 100vh;
+            position: fixed;
+            width: 250px;
+            padding-top: 20px;
+        }
+        .sidebar a {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            display: block;
+            transition: background-color 0.3s;
+        }
+        .sidebar a:hover {
+            background-color: #064F56;
+        }
+        .sidebar i {
+            margin-right: 10px;
+        }
+        .content {
+            margin-left: 260px; /* Space for the sidebar */
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h3 class="text-center text-white mb-5">HR <br> MANAGEMENT SYSTEM</h3>
+        <a href="{% url 'dashboard' %}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+
+        <!-- Personnel and Contracts Section -->
+        <a href="{% url 'personnels' %}"><i class="fas fa-users"></i> Personnel Management</a>
+        <a href="{% url 'liste_contrats' %}"><i class="fas fa-file-contract"></i> Contracts</a>
+        <a href="{% url 'archive_contrats' %}"><i class="fas fa-archive"></i> Archived Contracts</a>
+
+        <!-- Salary and Attendance Section -->
+        <a href="{% url 'salaire' %}"><i class="fas fa-dollar-sign"></i> Salaries</a>
+        <a href="{% url 'employe_assiduite' %}"><i class="fas fa-calendar-check"></i> Attendance</a>
+
+        <!-- Recruitment Section -->
+        <a href="{% url 'liste_offre_emploi' %}"><i class="fas fa-briefcase"></i> Recruitment</a>
+        <a href="{% url 'liste_candidats' %}"><i class="fas fa-user-plus"></i> Applications</a>
+        <a href="{% url 'liste_entretiens' %}"><i class="fas fa-comments"></i> Interviews</a>
+        <a href="{% url 'liste_conges' %}"><i class="fas fa-calendar-alt"></i> Congés</a>
+<a href="{% url 'liste_offre_emploi' %}"><i class="fas fa-briefcase"></i> Offres d'Emploi</a>
+
+
+        <!-- Favorite Sections -->
+        <a href="{% url 'liste_favoris' %}"><i class="fas fa-heart"></i> Favorites</a>
+
+        <!-- Authentication Section -->
+        <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>    
+
+    <!-- Main Content -->
+    <div class="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <!-- Link to Bootstrap JS -->
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

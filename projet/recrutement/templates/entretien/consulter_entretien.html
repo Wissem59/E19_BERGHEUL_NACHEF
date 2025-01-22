@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulter un Contrat</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .main-content {
+            padding: 20px;
+        }
+
+        .frame-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            margin: 30px auto;
+            max-width: 900px;
+            border: 2px solid #08676F;
+        }
+
+        .btn-custom {
+    background-color: #08676F;
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    border: none;
+}
+
+.btn-custom:hover {
+    background-color: #065b5c;
+}
+
+
+        .go-back-btn {
+            background-color: #f5f5f5;
+            color: #0066cc;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .go-back-btn:hover {
+            background-color: #e0e0e0;
+        }
+
+        .favorite-btn {
+            background-color: transparent;
+            border: none;
+            color: #f0ad4e;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .favorite-btn:hover {
+            color: #ff9900;
+        }
+
+        .info-section {
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-section h2 {
+            margin-bottom: 10px;
+            color: #08676F;
+        }
+
+        .info-item {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .info-item span {
+            font-weight: bold;
+        }
+
+        @media print {
+            .btn-custom, .go-back-btn, .favorite-btn {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% extends "base.html" %}
+
+    {% block title %}Consulter Contrat{% endblock %}
+
+    {% block content %}
+    <div class="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <form method="post" action="{% url 'ajouter_favoris' current_url=current_url %}">
+                {% csrf_token %}
+                <button type="submit" class="favorite-btn" title="Add to Favorites">
+                    <i class="fas fa-star"></i>
+                </button> 
+            </form>
+            <h1>Consulter un Contrat</h1>
+            <a href="javascript:history.back()" class="go-back-btn" title="Go Back">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+        </div>
+        <div class="frame-container">
+            <div class="interview-detail">
+                <label>Candidat :</label>
+                <p>{{ entretien.candidat }}</p>
+            </div>
+
+            <div class="interview-detail">
+                <label>Date de l'Entretien :</label>
+                <p>{{ entretien.date_entretien|date:"d/m/Y" }}</p>
+            </div>
+
+            <div class="interview-detail">
+                <label>Heure :</label>
+                <p>{{ entretien.date_entretien|date:"H:i" }}</p>
+            </div>
+
+            <div class="interview-detail">
+                <label>Lieu :</label>
+                <p>{{ entretien.lieu }}</p>
+            </div>
+
+            <div class="interview-detail">
+                <label>Statut :</label>
+                <p>{{ entretien.statut }}</p>
+            </div>
+
+            <a href="{% url 'modifier_entretien' entretien.id_entretien %}" class="btn-custom">Modifier l'Entretien</a>
+        </div>
+    </div>
+    {% endblock %}
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluations</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .main-content {
+            padding: 20px;
+        }
+
+        .frame-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            margin: 30px auto;
+            max-width: 900px;
+            border: 2px solid #08676F;
+        }
+
+        .btn-custom {
+            background-color: #08676F;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-custom:hover {
+            background-color: #065b5c;
+        }
+
+        .go-back-btn {
+            background-color: #f5f5f5;
+            color: #0066cc;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .go-back-btn:hover {
+            background-color: #e0e0e0;
+        }
+
+        .favorite-btn {
+            background-color: transparent;
+            border: none;
+            color: #f0ad4e;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .favorite-btn:hover {
+            color: #ff9900;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        form select, form button {
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            background-color: #f4f4f4;
+            font-size: 16px;
+        }
+
+        form select:focus, form button:focus {
+            border-color: #08676F;
+            outline: none;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #fff;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #08676F;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        li strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+    </style>
+</head>
+<body>
+    {% extends "base.html" %}
+
+    {% block title %}Evaluations{% endblock %}
+    
+    {% block content %}
+    <div class="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <form method="post" action="{% url 'ajouter_favoris' current_url=current_url %}">
+                {% csrf_token %}
+                <button type="submit" class="favorite-btn" title="Add to Favorites">
+                    <i class="fas fa-star"></i>
+                </button>
+            </form>
+            <h1>Evaluations for {{ employee.name }}</h1>
+            
+            <a href="javascript:history.back()" class="go-back-btn" title="Go Back">
+                <i class="fas fa-arrow-left"></i> 
+            </a>
+        </div>
+        
+        <div class="frame-container">
+            <form method="get" action="" class="d-flex justify-content-center mb-4">
+                <label for="evaluation_type" class="text-lg font-medium text-gray-700">Select Evaluation Type</label>
+                <select name="evaluation_type" id="evaluation_type" onchange="this.form.submit()">
+                    <option value="">All Evaluation Types</option>
+                    <option value="Annual" {% if request.GET.evaluation_type == 'Annual' %}selected{% endif %}>Annual</option>
+                    <option value="Semi-Annual" {% if request.GET.evaluation_type == 'Semi-Annual' %}selected{% endif %}>Semi-Annual</option>
+                </select>
+            </form>
+            
+            <ul>
+                {% for eval in evaluations %}
+                    <li>
+                        <strong>Date:</strong> {{ eval.date }} <br>
+                        <strong>Evaluation Type:</strong> {{ eval.get_evaluation_type_display }} <br>
+                        <strong>Objectives:</strong> {{ eval.objectives }} <br>
+                        <strong>Rating:</strong> {{ eval.performance_rating }} <br>
+                        <strong>Skills Developed:</strong> {{ eval.skills_developed }} <br>
+                        <strong>Comments:</strong> {{ eval.comments }} <br>
+                        <strong>Criteria:</strong> {{ eval.criteria }} <br>  
+                        <p>
+                            <a href="{% url 'evaluation_report' eval.id %}">Download Report</a>
+                        </p>
+                    </li>
+                {% endfor %}
+            </ul>
+            
+            <a href="{% url 'add_evaluation' employee.id %}" class="btn-custom mt-4">Add Evaluation</a>
+        </div>
+    </div>
+    {% endblock %}
+</body>
+</html>

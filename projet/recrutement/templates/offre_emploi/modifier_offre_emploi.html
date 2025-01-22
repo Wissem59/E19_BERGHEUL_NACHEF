@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier un Contrat</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .main-content {
+            padding: 20px;
+        }
+
+        .frame-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            margin: 30px auto;
+            max-width: 900px;
+            border: 2px solid #08676F;
+        }
+
+        .btn-custom {
+            background-color: #08676F;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-custom:hover {
+            background-color: #065b5c;
+        }
+
+        .go-back-btn {
+            background-color: #f5f5f5;
+            color: #0066cc;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .go-back-btn:hover {
+            background-color: #e0e0e0;
+        }
+
+        .favorite-btn {
+            background-color: transparent;
+            border: none;
+            color: #f0ad4e;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .favorite-btn:hover {
+            color: #ff9900;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        form input, form select, form textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            background-color: #f4f4f4;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+
+        form input:focus, form select:focus, form textarea:focus {
+            border-color: #08676F;
+            outline: none;
+        }
+
+        form button {
+            padding: 12px 15px;
+            background-color: #08676F;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .info-section {
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-section h2 {
+            margin-bottom: 10px;
+            color: #08676F;
+        }
+
+        .info-item {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .info-item span {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    {% extends "base.html" %}
+
+    {% block title %}Modifier une Offre d'emploi{% endblock %}
+
+    {% block content %}
+    <div class="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <!-- Go back button -->
+            <form method="post" action="{% url 'ajouter_favoris' current_url=current_url %}">
+                {% csrf_token %}
+                <button type="submit" class="favorite-btn" title="Add to Favorites">
+                    <i class="fas fa-star"></i>
+                </button> 
+            </form>
+            
+            <h1>Modifier une Offre d'emploi</h1>
+            <!-- Add the "Favoris" button -->
+            <a href="javascript:history.back()" class="go-back-btn" title="Go Back">
+                <i class="fas fa-arrow-left"></i> 
+            </a>
+        </div>
+        <div class="frame-container">
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="titre">Titre du Poste :</label>
+                    <input type="text" id="titre" name="titre" required placeholder="Entrez le titre du poste" value="{{ offre_emploi.titre }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description du Poste :</label>
+                    <textarea id="description" name="description" required placeholder="Entrez la description du poste">{{ offre_emploi.description }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="lieu">Lieu :</label>
+                    <input type="text" id="lieu" name="lieu" required placeholder="Entrez le lieu de travail" value="{{ offre_emploi.lieu }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="type_contrat">Type de Contrat :</label>
+                    <select id="type_contrat" name="type_contrat" required>
+                        <option value="CDI" {% if offre_emploi.type_contrat == "CDI" %}selected{% endif %}>Contrat à Durée Indéterminée (CDI)</option>
+                        <option value="CDD" {% if offre_emploi.type_contrat == "CDD" %}selected{% endif %}>Contrat à Durée Déterminée (CDD)</option>
+                        <option value="STAGE" {% if offre_emploi.type_contrat == "STAGE" %}selected{% endif %}>Stage</option>
+                        <option value="OTHER" {% if offre_emploi.type_contrat == "OTHER" %}selected{% endif %}>Autre</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="date_expiration">Date Limite de Candidature :</label>
+                    <input type="date" id="date_expiration" name="date_expiration" required value="{{ offre_emploi.date_expiration|date:'Y-m-d' }}">
+                </div>
+                <div class="form-group">
+                    <label for="statut">Statut :</label>
+                    <select id="statut" name="statut" required>
+                        <option value="Actif" {% if offre_emploi.statut == "Actif" %}selected{% endif %}>Actif</option>
+                        <option value="En attente" {% if offre_emploi.statut == "En attente" %}selected{% endif %}>En attente</option>
+                        <option value="Expiré" {% if offre_emploi.statut == "Expiré" %}selected{% endif %}>Expiré</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn-custom">Mettre à Jour l'Offre</button>
+            </form>
+        </div>
+    </div>
+    {% endblock %}
+</body>
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Favoris</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        @media print {
+            .btn, .search-bar, .pagination {
+                display: none;
+            }
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8fafc;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #08676F;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        .favorite-item {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease-in-out;
+        }
+
+        .favorite-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .favorite-item h5 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: #08676F;
+            margin-bottom: 8px;
+        }
+
+        .favorite-item p {
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .favorite-item a {
+            font-size: 0.9rem;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-transform: capitalize;
+        }
+
+        .btn-outline-primary {
+            border-color: #08676F;
+            color: #08676F;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #08676F;
+            color: #fff;
+        }
+
+        .btn-outline-danger {
+            border-color: #d9534f;
+            color: #d9534f;
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #d9534f;
+            color: #fff;
+        }
+
+        .search-bar {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .search-bar input {
+            width: 100%;
+            max-width: 500px;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+            font-size: 1rem;
+        }
+
+        .btn-dark {
+            background-color: #08676F;
+            color: white;
+            border-radius: 25px;
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .btn-dark:hover {
+            background-color: #065b5c;
+        }
+
+        .text-center {
+            margin-top: 30px;
+        }
+
+        .no-favorites {
+            font-size: 1.2rem;
+            color: #666;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    {% extends "base.html" %}
+
+    {% block title %}Liste des Favoris{% endblock %}
+
+    {% block content %}
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Liste des Favoris</h1>
+
+        <!-- Search Bar -->
+        <div class="search-bar mb-4">
+            <input type="text" id="searchInput" placeholder="Rechercher un favori...">
+        </div>
+
+        <!-- Favorite Items -->
+        <div id="favoriteList">
+            {% for favori in favoris %}
+            <div class="favorite-item">
+                <h5>{{ favori.name }}</h5>
+                <p>{{ favori.description }}</p>
+<div class="d-flex justify-content-start">
+    <a href="{{ favori.section_url }}" target="_blank" class="btn btn-outline-primary btn-sm me-2">Visiter</a>
+    <a href="{% url 'supprimer_favoris' favori.id %}" class="btn btn-outline-danger btn-sm">Supprimer</a>
+</div>
+
+            </div>
+            {% empty %}
+            <p class="no-favorites">Aucun favori trouvé.</p>
+            {% endfor %}
+        </div>
+
+        <!-- Print Button -->
+        <div class="text-center">
+            <button onclick="printTable()" class="btn btn-dark">Imprimer la Liste des Favoris</button>
+        </div>
+    </div>
+
+    <script>
+        // Print Functionality
+        function printTable() {
+            const printContent = document.getElementById('favoriteList').innerHTML;
+            const originalContent = document.body.innerHTML;
+
+            document.body.innerHTML = printContent;
+            window.print();
+            document.body.innerHTML = originalContent;
+        }
+
+        // Search Functionality
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            const filter = this.value.toLowerCase();
+            const rows = document.querySelectorAll('.favorite-item');
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(filter) ? '' : 'none';
+            });
+        });
+    </script>
+    {% endblock %}
+</body>
+</html>

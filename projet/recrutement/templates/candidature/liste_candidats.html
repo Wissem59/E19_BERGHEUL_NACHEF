@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Candidats</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+        }
+        .main-content {
+            padding: 20px;
+        }
+        .frame-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            margin: 30px auto;
+            max-width: 900px;
+            border: 2px solid #08676F;
+        }
+        .btn-custom {
+            background-color: #08676F;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .btn-custom:hover {
+            background-color: #065b5c;
+        }
+        .btn-sm {
+            font-size: 0.9rem;
+        }
+        .table th, .table td {
+            text-align: center;
+            vertical-align: middle;
+        }
+        .table {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        .favorite-btn {
+            background-color: transparent;
+            border: none;
+            color: #f0ad4e;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .favorite-btn:hover {
+            color: #ff9900;
+        }
+        @media print {
+            .btn, .form-control, .search-bar {
+                display: none;
+            }
+            .table {
+                width: 100%;
+                border: 1px solid #000;
+                border-collapse: collapse;
+            }
+            th, td {
+                padding: 8px;
+                text-align: left;
+                border: 1px solid #ddd;
+            }
+            thead {
+                background-color: #f2f2f2;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% extends "base.html" %}
+
+    {% block title %}Liste des Candidats{% endblock %}
+
+    {% block content %}
+    <div class="main-content">
+        
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <button class="favorite-btn" title="Ajouter aux Favoris" onclick="toggleFavorite('liste_candidats')">
+                    <i class="fas fa-star"></i>
+                </button>
+                <h1>Liste des Candidats pour l'Offre d'Emploi</h1>
+                <a href="javascript:history.back()" class="btn btn-light" title="Retour">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+            </div>
+            
+            <form method="GET" class="search-bar my-4 row">
+                <div class="col-md-9">
+                    <input type="text" name="candidate_name" class="form-control" placeholder="Rechercher par nom" value="{{ request.GET.candidate_name }}">
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-custom w-100">Rechercher</button>
+                </div>
+            </form>
+
+            <button onclick="printTable()" class="btn btn-dark mb-3">Imprimer la Liste des Candidats</button>
+
+            <div id="printableArea">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>Email</th>
+                            <th>Téléphone</th>
+                            <th>Poste</th>
+                            <th>Statut de la candidature</th>
+                            <th>Date de candidature</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for candidat in candidats %}
+                        <tr>
+                            <td>{{ candidat.id }}</td>
+                            <td>{{ candidat.nom }}</td>
+                            <td>{{ candidat.email }}</td>
+                            <td>{{ candidat.telephone }}</td>
+                            <td>{{ candidat.poste }}</td>
+                            <td>  
+                                {% if candidat.statut == 'Actif' %}
+                                    Actif
+                                {% elif candidat.statut == 'En attente' %}
+                                    En Attente
+                                {% elif candidat.statut == 'Accepté' %}
+                                    Accepté
+                                {% elif candidat.statut == 'Rejeté' %}
+                                    Rejeté
+                                {% endif %}
+                            </td>
+                            <td>{{ candidat.date_soumission|date:"d-m-Y" }}</td>
+                            <td>
+                                <a href="{% url 'consulter_candidature' candidat.id %}" class="btn text-primary btn-sm text-decoration-underline">Voir Détails</a>
+                                <a href="{% url 'modifier_statut_candidature' candidat.id %}" class="btn btn-dark btn-sm">Modifier Statut</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center">Aucun candidat trouvé.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function printTable() {
+            var printContent = document.getElementById('printableArea').innerHTML;  // Get the content of the table
+            var originalContent = document.body.innerHTML;  // Save the original content of the page
+            
+            document.body.innerHTML = printContent;  // Replace the page content with the table
+            window.print();  // Trigger the print dialog
+            
+            document.body.innerHTML = originalContent;  // Restore the original content after printing
+        }
+    </script>
+
+    {% endblock %}
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Système de Pointage</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+        }
+
+        .main-content {
+            padding: 20px;
+        }
+
+        .frame-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            margin: 30px auto;
+            max-width: 900px;
+            border: 2px solid #08676F;
+        }
+
+        .btn-custom {
+            background-color: #08676F;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-custom:hover {
+            background-color: #065b5c;
+        }
+
+        .go-back-btn {
+            background-color: #f5f5f5;
+            color: #0066cc;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .go-back-btn:hover {
+            background-color: #e0e0e0;
+        }
+
+        .favorite-btn {
+            background-color: transparent;
+            border: none;
+            color: #f0ad4e;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .favorite-btn:hover {
+            color: #ff9900;
+        }
+
+        .table th, .table td {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .table {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-sm {
+            font-size: 0.9rem;
+        }
+
+        @media print {
+            .btn, .form-control, .search-bar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% extends "base.html" %}
+
+    {% block title %}Pointage{% endblock %}
+
+    {% block content %}
+    <div class="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <!-- Add the "Favoris" button -->
+            <form method="post" action="{% url 'ajouter_favoris' current_url=current_url %}">
+                {% csrf_token %}
+                <button type="submit" class="favorite-btn" title="Add to Favorites">
+                    <i class="fas fa-star"></i>
+                </button> 
+            </form>
+            <h1>Système de Pointage</h1>
+            <!-- Go back button -->
+            <a href="javascript:history.back()" class="go-back-btn" title="Go Back">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+        </div>
+
+        <!-- Add Absence Button -->
+        <div class="mb-4 text-center">
+            <a href="{% url 'ajouter_absence' %}" class="btn btn-custom">Ajouter une Absence</a>
+        </div>
+
+        <!-- Search Filters -->
+        <div class="filter-bar my-4 row">
+            <div class="col-md-3">
+                <input type="text" name="id_employe" class="form-control" placeholder="Rechercher par ID employé" value="{{ request.GET.id_employe }}">
+            </div>
+            <div class="col-md-3">
+                <input type="text" name="nom_employe" class="form-control" placeholder="Rechercher par nom employé" value="{{ request.GET.nom_employe }}">
+            </div>
+            <div class="col-md-3">
+                <input type="date" name="q" class="form-control" placeholder="Choisir une date" value="{{ request.GET.q|default:today_date }}">
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-custom w-100">Rechercher</button>
+            </div>
+        </div>
+
+        <!-- Attendance Table -->
+        <div id="printableArea">
+            <table class="table table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Matricule Employé</th>
+                        <th>Nom Employé</th>
+                        <th>Date</th>
+                        <th>Assiduité</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for presence in assiduite %}
+                    <tr>
+                        <td>{{ presence.matricule }}</td>
+                        <td>{{ presence.nom }}</td>
+                        <td>{{ presence.date_absence }}</td>
+                        <td>{{ presence.is_absent }}</td>
+                        <td>
+                            <a href="{% url 'modifier_absence' presence.matricule presence.date_absence %}" class="btn btn-primary btn-sm">Modifier</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center">Aucun Employé trouvé.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Print Button -->
+        <div class="text-center mt-4">
+            <button onclick="printTable()" class="btn btn-custom">Imprimer la Liste des Présences</button>
+        </div>
+    </div>
+
+    <script>
+        // Print Functionality
+        function printTable() {
+            const printContent = document.getElementById('printableArea').innerHTML;
+            const originalContent = document.body.innerHTML;
+
+            document.body.innerHTML = printContent;
+            window.print();
+            document.body.innerHTML = originalContent;
+        }
+    </script>
+    {% endblock %}
+</body>
+</html>

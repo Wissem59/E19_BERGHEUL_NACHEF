@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Renouveler le Contrat de l'Employé</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .main-content {
+            padding: 20px;
+        }
+
+        .frame-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            margin: 30px auto;
+            max-width: 800px;
+            border: 2px solid #08676F;
+        }
+
+        .btn-custom {
+            background-color: #08676F;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-custom:hover {
+            background-color: #065b5c;
+        }
+
+        .go-back-btn {
+            background-color: #f5f5f5;
+            color: #0066cc;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .go-back-btn:hover {
+            background-color: #e0e0e0;
+        }
+
+        .favorite-btn {
+            background-color: transparent;
+            border: none;
+            color: #f0ad4e;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .favorite-btn:hover {
+            color: #ff9900;
+        }
+
+        .form-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ccc;
+            margin-top: 20px;
+        }
+
+        .form-container h3 {
+            color: #08676F;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-container input,
+        .form-container select,
+        .form-container textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            background-color: #f4f4f4;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+
+        .form-container input:focus,
+        .form-container select:focus,
+        .form-container textarea:focus {
+            border-color: #08676F;
+            outline: none;
+        }
+
+        .form-container button {
+            padding: 12px 15px;
+            background-color: #08676F;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+
+        .form-container button:hover {
+            background-color: #065b5c;
+        }
+    </style>
+</head>
+<body>
+    {% extends "base.html" %}
+
+    {% block title %}Renouveler le Contrat de l'Employé{% endblock %}
+    
+    {% block content %}
+    <div class="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <!-- Go back button -->
+            <a href="javascript:history.back()" class="go-back-btn" title="Retour à la liste">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <h1>Renouveler le Contrat</h1>
+            <!-- Add the "Favoris" button -->
+            <form method="post" action="{% url 'ajouter_favoris' current_url=current_url %}">
+                {% csrf_token %}
+                <button type="submit" class="favorite-btn" title="Add to Favorites">
+                    <i class="fas fa-star"></i>
+                </button> 
+            </form>
+        </div>
+    
+        <div class="frame-container">
+            
+            <div class="form-container">
+                <h3>Informations de l'Employé</h3>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="employee_name">Nom de l'Employé</label>
+                        <input type="text" id="employee_name" name="employee_name" value="{{ employe.name }}" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="type_contrat">Type de Contrat</label>
+                        <select id="type_contrat" name="type_contrat">
+                            <option value="CDI" {% if current.type_contrat == 'CDI' %}selected{% endif %}>CDI</option>
+                            <option value="CDD" {% if current.type_contrat == 'CDD' %}selected{% endif %}>CDD</option>
+                            <option value="Stage" {% if current.type_contrat == 'Stage' %}selected{% endif %}>Stage</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="date_debut">Date de début du nouveau contrat</label>
+                        <input type="date" id="date_debut" name="date_debut" value="{{ current.date_fin|date:'Y-m-d' }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="contrat_duration">Durée du Contrat</label>
+                        <select id="contrat_duration" name="contrat_duration">
+                            <option value="12" {% if current.contrat_duration == 12 %}selected{% endif %}>12 mois</option>
+                            <option value="24" {% if current.contrat_duration == 24 %}selected{% endif %}>24 mois</option>
+                            <option value="36" {% if current.contrat_duration == 36 %}selected{% endif %}>36 mois</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="comments">Commentaires (facultatif)</label>
+                        <textarea id="comments" name="comments" rows="4" placeholder="Entrez des commentaires ou des notes concernant le renouvellement du contrat.">{{ current.commentaires }}</textarea>
+                    </div>
+                    <button type="submit" class="btn-custom">Renouveler le Contrat</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+    
+</body> 
+</html>

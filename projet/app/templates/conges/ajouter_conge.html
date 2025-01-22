@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter un Congé</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        .main-content {
+            padding: 20px;
+        }
+        .frame-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            margin: 30px auto;
+            max-width: 800px;
+            border: 2px solid #08676F;
+        }
+        .btn-custom {
+            background-color: #08676F;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .btn-custom:hover {
+            background-color: #065b5c;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        form input, form select, form textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            background-color: #f4f4f4;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+        form input:focus, form select:focus, form textarea:focus {
+            border-color: #08676F;
+            outline: none;
+        }
+        form button {
+            padding: 12px 15px;
+            background-color: #08676F;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        form button:hover {
+            background-color: #065b5c;
+        }
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .dashboard-header h1 {
+            margin: 0;
+        }
+        .go-back-btn {
+            background-color: #f5f5f5;
+            color: #08676F;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 10px;
+            transition: background-color 0.3s ease;
+        }
+        .go-back-btn:hover {
+            background-color: #e0e0e0;
+        }
+        .favorite-btn {
+            background-color: transparent;
+            border: none;
+            color: #f0ad4e;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .favorite-btn:hover {
+            color: #ff9900;
+        }
+    </style>
+</head>
+<body>
+    {% extends "base.html" %}
+    
+    {% block title %}Ajouter un Congé{% endblock %}
+    
+    {% block content %}
+    <div class="main-content">
+        <!-- Header with Favorites and Go Back -->
+        <div class="dashboard-header">
+            <form method="post" action="{% url 'ajouter_favoris' current_url=current_url %}">
+                {% csrf_token %}
+                <button type="submit" class="favorite-btn" title="Add to Favorites">
+                    <i class="fas fa-star"></i>
+                </button>
+            </form>
+            <h1>Ajouter un Congé</h1>
+            <a href="javascript:history.back()" class="go-back-btn" title="Go Back">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+        </div>
+
+        <!-- Form Section -->
+        <div class="frame-container">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.employe_identifier.label_tag }} <br>
+                {{ form.employe_identifier }} <br>
+                {{ form.employe_identifier.help_text }} <br><br>
+                
+                {{ form.as_p }}
+                <button type="submit" class="btn-custom">Enregistrer</button>
+            </form>
+        </div>
+    </div>
+    {% endblock %}
+</body>
+</html>
