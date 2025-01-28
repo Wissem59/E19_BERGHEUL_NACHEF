@@ -11,7 +11,6 @@ Génération de rapports et d'analyses graphiques.
 
 Packages a installer:
 
-python.exe -m pip install --upgrade pip
 pip install django
 pip install django-background-tasks
 pip install python-dateutil
